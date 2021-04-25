@@ -1,0 +1,6 @@
+001;Microondas;Teka;JAK91;D;3;100;900;20
+002;Microondas;Teka;PQO12;C;2;240;800;15
+003;Microondas;Teka;QLS01;A;4;120;500;10
+004;Microondas;Teka;QLS02;A;1;99;1000;26
+005;Microondas;Teka;QLS03;B;8;84;750;15
+006;Microondas;Teka;QLS04;A;5;110;700;10

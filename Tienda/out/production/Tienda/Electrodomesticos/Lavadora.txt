@@ -1,0 +1,6 @@
+001;Lavadora;Balay;DFG82;C;4;800;1900;7
+002;Lavadora;Balay;LK01;A;4;840;2000;8
+003;Lavadora;Balay;HDJ02;A;6;1200;1500;7
+004;Lavadora;Balay;FHK03;A;7;1000;2000;6
+005;Lavadora;Balay;JLK3;A;1;5050;1800;5
+006;Lavadora;Balay;JLK4;D;3;320;1800;8

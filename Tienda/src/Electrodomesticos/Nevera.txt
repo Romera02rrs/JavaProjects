@@ -1,0 +1,6 @@
+001;Nevera;Bosch;89LO;D;3;200;2;1;1;true
+002;Nevera;Bosch;01LOI;D;2;200;3;2;2;true
+003;Nevera;Bosch;02909;D;4;200;2;2;2;false
+004;Nevera;Bosch;07KJL;A;1;200;1;2;2;false
+005;Nevera;Bosch;HGF514;B;8;200;2;2;2;false
+006;Nevera;Bosch;JH91;B;5;200;1;2;1;true

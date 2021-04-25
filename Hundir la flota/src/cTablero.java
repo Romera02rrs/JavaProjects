@@ -235,8 +235,8 @@ public class cTablero {
             }
         }
     }
-
-    //Metodo que mantendra el juego en ejecucion hasta que no queden barcos
+    
+    /** Metodo que mantendra el juego en ejecucion hasta que no queden barcos */
     public void jugar () {
 
         int posColumna, posFila, comprobacionDisparo;

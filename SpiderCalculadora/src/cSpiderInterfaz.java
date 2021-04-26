@@ -8,7 +8,7 @@ public class cSpiderInterfaz extends JFrame {
 
     cSpiderCalculos calculo = new cSpiderCalculos();
 
-    private String rutaFondo = "src\\Imagenes\\SpiderFondo.png";
+    private String rutaFondo = "src/Imagenes/SpiderFondo.png";
     private Color transparente = new Color(0,0,0,0);
     private Color translucido = new Color(0,0,0,100);
     private Color rojoPastel = new Color(255, 118, 112, 150);

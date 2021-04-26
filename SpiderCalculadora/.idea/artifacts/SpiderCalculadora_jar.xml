@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SpiderCalculadora:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SpiderCalculadora_jar</output-path>
+    <root id="archive" name="SpiderCalculadora.jar">
+      <element id="module-output" name="SpiderCalculadora" />
+    </root>
+  </artifact>
+</component>

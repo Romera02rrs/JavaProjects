@@ -107,6 +107,17 @@ public class cTableroCalculos {
         }
     }
 
+    //Metodo que comprueba si quedan barcos a flote
+    public boolean compruebaFin(){
+
+        //Si se cumple entonces los barcos no tienen vida y acaba el juego
+        if(p.vida == 0 && bb.vida == 0 && s.vida == 0 && c.vida == 0 && l.vida == 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /** ------------------------------------------------------------------------------------------------------- */
 
 
@@ -221,6 +232,12 @@ public class cTableroCalculos {
             }
         }
         return null;
+    }
+
+    public int getGrandaria(String barco){
+
+        cBarcos b = getBarco(barco);
+        return b.GRANDARIA;
     }
 
     public boolean getPosicionValida(){

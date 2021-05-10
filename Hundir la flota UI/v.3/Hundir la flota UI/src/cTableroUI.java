@@ -8,21 +8,40 @@ import java.awt.event.ActionListener;
 
 public class cTableroUI extends JFrame implements ActionListener {
 
-    Color translucido = new Color(0, 0,0, 100);
+    Color azul;
+    Color negro;
+    Color verde;
+    Color rojo;
+    Color morado;
+    Color amarillo;
+
+    Font mono30;
+    Font mono15;
+    Font mono13;
+
+    LineBorder bordeRedondeado;
+
+    TitledBorder tituloBorde;
+
+    String[] nombreBarcos;
+
+
+    DefaultComboBoxModel barcosComboBox;
 
     private cTableroCalculos tc = new cTableroCalculos();
     private cDisparosUI dUI = new cDisparosUI();
 
 
     private JButton[][] btnOcupados = new JButton[8][8];
+    private JButton[] btnPanelBarcos = new JButton[5];
 
     private JPanel contentPane;
     private JPanel panelBotones;
-    private JPanel panelBotonesColor;
     private JLabel pantalla;
     private JComboBox menuBarcos;
     private JLabel lblBarcos;
     private JPanel panelBarcos;
+    private JPanel panelBotonesBarcos;
     private JPanel panelRdbt;
     private ButtonGroup buttonGroup;
     private JRadioButton rdbtnVertical;
@@ -81,9 +100,6 @@ public class cTableroUI extends JFrame implements ActionListener {
                     tc.quitarBarcoMemoria();
                 }
                 pintarBarco();
-                if(verificarBarcosInsertados()){
-                    setTextoPantalla("boton comenzar juego");
-                }
             }
         }
     }
@@ -93,16 +109,24 @@ public class cTableroUI extends JFrame implements ActionListener {
         for (int i = 0; i < tc.ocupados.length; i ++){
             for (int j = 0; j < tc.ocupados[i].length; j++){
                 if(tc.ocupados[i][j] == ' '){
-                    btnOcupados[i][j].setOpaque(false);
-                    btnOcupados[i][j].setBackground(Color.white);
+                    btnOcupados[i][j].setBackground(azul);
                 }else if(tc.ocupados[i][j] == 'o'){
-                    btnOcupados[i][j].setOpaque(true);
-                    btnOcupados[i][j].setBackground(Color.blue);
+                    btnOcupados[i][j].setBackground(verde);
                 }else{
-                    btnOcupados[i][j].setOpaque(true);
-                    btnOcupados[i][j].setBackground(Color.BLACK);
+                    btnOcupados[i][j].setBackground(negro);
                 }
             }
+        }
+    }
+
+    public void pintarPanelBarcos(String barcoSeleccionado){
+
+        int grandaria = tc.getGrandaria(barcoSeleccionado);
+        for (int i  = 0; i < btnPanelBarcos.length; i++){
+            btnPanelBarcos[i].setBackground(azul);
+        }
+        for (int i = 0; i < grandaria; i++){
+            btnPanelBarcos[i].setBackground(rojo);
         }
     }
 
@@ -140,6 +164,7 @@ public class cTableroUI extends JFrame implements ActionListener {
     public void actionComenzarJuego(){
 
         if(verificarBarcosInsertados()){
+            this.setVisible(false);
             dUI.jugar();
             dUI.tc = this.tc;
         }else{
@@ -181,84 +206,151 @@ public class cTableroUI extends JFrame implements ActionListener {
                 btnOcupados[i][j] = new JButton();
                 btnOcupados[i][j].addActionListener(this);
                 btnOcupados[i][j].setActionCommand(iString+jString);
-                btnOcupados[i][j].setBorder(new LineBorder(Color.black, 2, false));
-                btnOcupados[i][j].setOpaque(false);
-                //btnOcupados[i][j].setFocusable(false);
-                btnOcupados[i][j].setBackground(Color.WHITE);
+                btnOcupados[i][j].setBackground(azul);
+                btnOcupados[i][j].setBorder(new LineBorder(Color.lightGray, 1, false));
                 panelBotones.add(btnOcupados[i][j]);
             }
+        }
+    }
+
+    public void insertarBotonesBarcos(){
+
+        for (int i = 0; i < btnPanelBarcos.length; i++){
+
+            String iString = Integer.toString(i);
+            btnPanelBarcos[i] = new JButton();
+            btnPanelBarcos[i].setActionCommand(iString);
+            btnPanelBarcos[i].setBackground(azul);
+            btnPanelBarcos[i].setEnabled(false);
+            btnPanelBarcos[i].setBorder(new LineBorder(Color.lightGray, 2, false));
+            panelBotonesBarcos.add(btnPanelBarcos[i]);
         }
     }
 
     public cTableroUI() {
 
         super("Hundir la Flota - Ruben Romera");
+
+
+        /** Inicializacion de variables */
+
+        //Colores
+        azul = new Color(72, 158, 234);
+        negro = new Color(40, 44, 52);
+        verde = new Color(85, 168, 118);
+        rojo = new Color(215, 86, 109);
+        morado = new Color(176, 90, 155);
+        amarillo = new Color(229, 192, 123);
+
+        //Fuentes
+        mono30 = new Font("Liberation Mono", Font.BOLD, 30);
+        mono15 = new Font("Liberation Mono", Font.BOLD, 15);
+        mono13 = new Font("Liberation Mono", Font.BOLD, 13);
+
+        //Borde
+        bordeRedondeado = new LineBorder(verde, 2, true);
+
+        //Titulo del borde
+        tituloBorde = new TitledBorder(bordeRedondeado, "Direccion", TitledBorder.CENTER, TitledBorder.TOP, mono15, verde);
+
+        //Combobox de Barcos
+        nombreBarcos = new String[]{tc.p.nombre, tc.bb.nombre, tc.s.nombre, tc.c.nombre, tc.l.nombre};
+        barcosComboBox = new DefaultComboBoxModel(nombreBarcos);
+
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1280, 720);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(null);
+        contentPane.setBackground(negro);
         setContentPane(contentPane);
+        contentPane.setLayout(null);
 
         panelBotones = new JPanel();
-        panelBotones.setOpaque(false);
-        panelBotones.setBorder(new LineBorder(Color.black, 3, false));
+        panelBotones.setBackground(Color.lightGray);
         panelBotones.setBounds(372, 72, 550, 550);
-        panelBotones.setLayout(new GridLayout(8, 8));
+        panelBotones.setBorder(new LineBorder(negro, 2, false));
         contentPane.add(panelBotones);
+        panelBotones.setLayout(new GridLayout(8, 8));
 
         /** Insertar los botones */
         insertarBotones();
 
         lblBarcos = new JLabel("Barcos");
         lblBarcos.setHorizontalAlignment(SwingConstants.CENTER);
-        lblBarcos.setFont(new Font("Liberation Mono", Font.BOLD, 30));
+        lblBarcos.setForeground(verde);
+        lblBarcos.setFont(mono30);
         lblBarcos.setBounds(982, 72, 250, 34);
         contentPane.add(lblBarcos);
 
         menuBarcos = new JComboBox();
-        menuBarcos.setModel(new DefaultComboBoxModel(new String[] {"PortaAviones", "Buque", "Submarino", "Crucero", "Lancha"})); //t.p.nombre
+        menuBarcos.setModel(barcosComboBox);
         menuBarcos.setSelectedItem(null);
         menuBarcos.setBounds(1022, 130, 182, 24);
+        menuBarcos.setBackground(verde);
+        menuBarcos.setFocusable(false);
+        menuBarcos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                pintarPanelBarcos((String) menuBarcos.getSelectedItem());
+            }
+        });
         contentPane.add(menuBarcos);
 
         panelRdbt = new JPanel();
-        panelRdbt.setOpaque(true);
-        panelRdbt.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 2, true), "Direccion", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+        panelRdbt.setBorder(tituloBorde);
         panelRdbt.setBounds(1000, 285, 230, 111);
-        panelRdbt.setBackground(translucido);
+        panelRdbt.setBackground(negro);
         contentPane.add(panelRdbt);
         panelRdbt.setLayout(new GridLayout(0, 2, 0, 0));
 
         buttonGroup = new ButtonGroup();
 
         rdbtnVertical = new JRadioButton("Vertical");
-        rdbtnVertical.setOpaque(false);
+        rdbtnVertical.setFont(mono13);
+        rdbtnVertical.setForeground(verde);
+        rdbtnVertical.setBackground(negro);
+        rdbtnVertical.setFocusable(false);
         buttonGroup.add(rdbtnVertical);
         panelRdbt.add(rdbtnVertical);
 
         rdbtnHorizontal = new JRadioButton("Horizontal");
-        rdbtnHorizontal.setOpaque(false);
+        rdbtnHorizontal.setFont(mono13);
+        rdbtnHorizontal.setForeground(verde);
+        rdbtnHorizontal.setBackground(negro);
+        rdbtnVertical.setFocusable(false);
         buttonGroup.add(rdbtnHorizontal);
         panelRdbt.add(rdbtnHorizontal);
 
+        panelBotonesBarcos = new JPanel();
+        panelBotonesBarcos.setBackground(Color.lightGray);
+        panelBotonesBarcos.setBounds(135, 92, 100, 500);
+        panelBotonesBarcos.setBorder(new LineBorder(Color.lightGray, 2));
+        panelBotonesBarcos.setLayout(new GridLayout(0,1));
+        contentPane.add(panelBotonesBarcos);
+
+        insertarBotonesBarcos();
+
         panelBarcos = new JPanel();
-        panelBarcos.setBackground(Color.BLUE);
+        panelBarcos.setBackground(azul);
         panelBarcos.setBounds(74, 28, 216, 631);
+        panelBarcos.setBorder(new LineBorder(Color.lightGray, 2));
         contentPane.add(panelBarcos);
 
         btnConfirmar = new JButton("Confirmar");
-        btnConfirmar.setBackground(Color.GREEN);
         btnConfirmar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionConfirmar();
             }
         });
+        btnConfirmar.setBackground(verde);
+        btnConfirmar.setFocusable(false);
+        btnConfirmar.setForeground(negro);
         btnConfirmar.setBounds(1041, 523, 173, 24);
         contentPane.add(btnConfirmar);
 
         pantalla = new JLabel("¡Bienvenido a Hundir la flota!");
         pantalla.setFont(new Font("Liberation Mono", Font.BOLD, 30));
+        pantalla.setForeground(verde);
         pantalla.setHorizontalAlignment(SwingConstants.CENTER);
         pantalla.setBounds(372, 12, 550, 48);
         contentPane.add(pantalla);
@@ -269,18 +361,10 @@ public class cTableroUI extends JFrame implements ActionListener {
                 actionComenzarJuego();
             }
         });
+        btnComenzarJuego.setBackground(verde);
+        btnComenzarJuego.setForeground(negro);
         btnComenzarJuego.setBounds(520, 644, 263, 25);
         contentPane.add(btnComenzarJuego);
-
-        panelBotonesColor = new JPanel();
-        panelBotonesColor.setBounds(372, 72, 550, 550);
-        panelBotonesColor.setBackground(translucido);
-        contentPane.add(panelBotonesColor);
-
-        JLabel lblNewLabel = new JLabel("");
-        lblNewLabel.setIcon(new ImageIcon("/media/romera/RRS-USB/shark2.gif"));
-        lblNewLabel.setBounds(0, 0, 1264, 681);
-        contentPane.add(lblNewLabel);
 
         tc.reinicializarTableros();
 

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +15,26 @@ public class cDisparosUI extends JFrame implements ActionListener{
     private JPanel panelBotones;
     private JLabel pantalla;
     private JPanel panelBarcos;
+
+    Color azul;
+    Color negro;
+    Color verde;
+    Color rojo;
+    Color morado;
+    Color amarillo;
+
+    Font mono30;
+    Font mono15;
+    Font mono13;
+
+    LineBorder bordeRedondeado;
+
+    TitledBorder tituloBorde;
+
+    String[] nombreBarcos;
+
+
+    DefaultComboBoxModel barcosComboBox;
 
     String coordenadas;
 
@@ -44,6 +66,9 @@ public class cDisparosUI extends JFrame implements ActionListener{
         }else{
             setTextoPantalla("Ya has disparado ahi");
         }
+        if(tc.compruebaFin()){
+            setTextoPantalla("Fin del juego");
+        }
     }
 
     public void pintar(){
@@ -51,9 +76,9 @@ public class cDisparosUI extends JFrame implements ActionListener{
         for (int i = 0; i < tc.disparos.length; i ++){
             for (int j = 0; j < tc.disparos[i].length; j++){
                 if(tc.disparos[i][j] == 'X'){
-                    btnOcupados[i][j].setBackground(Color.red);
+                    btnOcupados[i][j].setBackground(rojo);
                 }else if (tc.disparos[i][j] == '-'){
-                    btnOcupados[i][j].setBackground(Color.blue);
+                    btnOcupados[i][j].setBackground(negro);
                 }
             }
         }
@@ -72,7 +97,8 @@ public class cDisparosUI extends JFrame implements ActionListener{
                 String jString = Integer.toString(j);
                 btnOcupados[i][j] = new JButton();
                 btnOcupados[i][j].setActionCommand(iString+jString);
-                btnOcupados[i][j].setBackground(Color.WHITE);
+                btnOcupados[i][j].setBackground(azul);
+                btnOcupados[i][j].setBorder(new LineBorder(Color.lightGray, 1, false));
                 panelBotones.add(btnOcupados[i][j]);
                 btnOcupados[i][j].addActionListener(this);
             }
@@ -83,7 +109,7 @@ public class cDisparosUI extends JFrame implements ActionListener{
 
         for (int i = 0; i < 8; i ++){
             for (int j = 0; j < 8; j++){
-                btnOcupados[i][j].setBackground(Color.gray);
+                btnOcupados[i][j].setBackground(azul);
             }
         }
     }
@@ -91,16 +117,38 @@ public class cDisparosUI extends JFrame implements ActionListener{
     public cDisparosUI() {
 
         super("Hundir la Flota - Ruben Romera");
+
+
+        /** Inicializacion de variables */
+
+        //Colores
+        azul = new Color(72, 158, 234);
+        negro = new Color(40, 44, 52);
+        verde = new Color(85, 168, 118);
+        rojo = new Color(223, 74, 75);
+        morado = new Color(176, 90, 155);
+        amarillo = new Color(229, 192, 123);
+
+        //Fuentes
+        mono30 = new Font("Liberation Mono", Font.BOLD, 30);
+        mono15 = new Font("Liberation Mono", Font.BOLD, 15);
+        mono13 = new Font("Liberation Mono", Font.BOLD, 13);
+
+        //Borde
+        bordeRedondeado = new LineBorder(verde, 2, true);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1280, 720);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setBackground(negro);
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
         panelBotones = new JPanel();
-        panelBotones.setBackground(Color.RED);
+        panelBotones.setBackground(Color.lightGray);
         panelBotones.setBounds(372, 72, 550, 550);
+        panelBotones.setBorder(new LineBorder(negro, 2, false));
         contentPane.add(panelBotones);
         panelBotones.setLayout(new GridLayout(8, 8));
 
@@ -108,12 +156,13 @@ public class cDisparosUI extends JFrame implements ActionListener{
         insertarBotones();
 
         panelBarcos = new JPanel();
-        panelBarcos.setBackground(Color.BLUE);
+        panelBarcos.setBackground(azul);
         panelBarcos.setBounds(74, 28, 216, 631);
         contentPane.add(panelBarcos);
 
         pantalla = new JLabel("¡Bienvenido a Hundir la flota!");
         pantalla.setFont(new Font("Liberation Mono", Font.BOLD, 30));
+        pantalla.setForeground(verde);
         pantalla.setHorizontalAlignment(SwingConstants.CENTER);
         pantalla.setBounds(372, 12, 550, 48);
         contentPane.add(pantalla);

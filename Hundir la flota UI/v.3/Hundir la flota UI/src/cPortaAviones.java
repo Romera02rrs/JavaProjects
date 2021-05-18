@@ -9,10 +9,4 @@ public class cPortaAviones extends cBarcos {
         navegando = true;
         nombre = "PortaAviones";
     }
-
-    public void colocar(int f, int c, boolean d){
-        fila = f;
-        columna = c;
-        horizontal = d;
-    }
 }

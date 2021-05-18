@@ -12,20 +12,7 @@ public class cBarcos {
     protected int columna;
     protected boolean horizontal;
 
-    protected boolean siguienteBarco;
-
-    //Variables que adquieren los valores de los metodos llegir...()
-    /*protected int filaMemoria = -1;
-    protected int columnaMemoria = -1;
-    protected boolean horizontalMemoria;*/
-
     //Constructor de la super clase Barco
     public cBarcos(){
-    }
-
-    public void asignarCoordenadas(int f, int c, boolean d){
-        fila = f;
-        columna = c;
-        horizontal = d;
     }
 }

@@ -155,13 +155,8 @@ public class cDisparosUI extends JFrame implements ActionListener{
         /** Insertar los botones */
         insertarBotones();
 
-        panelBarcos = new JPanel();
-        panelBarcos.setBackground(azul);
-        panelBarcos.setBounds(74, 28, 216, 631);
-        contentPane.add(panelBarcos);
-
-        pantalla = new JLabel("¡Bienvenido a Hundir la flota!");
-        pantalla.setFont(new Font("Liberation Mono", Font.BOLD, 30));
+        pantalla = new JLabel("¡Comienza a disparar!");
+        pantalla.setFont(mono30);
         pantalla.setForeground(verde);
         pantalla.setHorizontalAlignment(SwingConstants.CENTER);
         pantalla.setBounds(372, 12, 550, 48);

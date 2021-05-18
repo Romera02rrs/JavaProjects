@@ -5,6 +5,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class cTableroUI extends JFrame implements ActionListener {
 
@@ -23,14 +25,12 @@ public class cTableroUI extends JFrame implements ActionListener {
 
     TitledBorder tituloBorde;
 
-    String[] nombreBarcos;
-
-
     DefaultComboBoxModel barcosComboBox;
+
+    String[] nombreBarcos;
 
     private cTableroCalculos tc = new cTableroCalculos();
     private cDisparosUI dUI = new cDisparosUI();
-
 
     private JButton[][] btnOcupados = new JButton[8][8];
     private JButton[] btnPanelBarcos = new JButton[5];
@@ -46,8 +46,11 @@ public class cTableroUI extends JFrame implements ActionListener {
     private ButtonGroup buttonGroup;
     private JRadioButton rdbtnVertical;
     private JRadioButton rdbtnHorizontal;
+    private JLabel infoBotones;
     private JButton btnConfirmar;
+    private JLabel infoConfirmar;
     private JButton btnComenzarJuego;
+    private JButton btnInfo;
 
     String coordenadas;
     String barcoSeleccionado;
@@ -64,6 +67,9 @@ public class cTableroUI extends JFrame implements ActionListener {
         });
     }
 
+    /** Metodo que es llamado cada vez que se presiona un boton del tablero
+     * y se encarga de llamar a todos los metodos necesarios para colocar y
+     * validar posiciones de los barcos*/
     @Override
     public void actionPerformed(ActionEvent evento) {
 
@@ -79,7 +85,11 @@ public class cTableroUI extends JFrame implements ActionListener {
         barcoSeleccionado = getBarcoSeleccionado();
         horizontal = getDireccion();
         if(barcoSeleccionado == null){
-            setTextoPantalla("Selecciona un barco");
+            if(verificarBarcosInsertados()){
+                setTextoPantalla("Presione ¡Comenzar a Jugar!");
+            }else{
+                setTextoPantalla("Selecciona un barco");
+            }
         }else{
             /** Establecer coordenadas */
             tc.setPropiedadesBarco(coordenadas, barcoSeleccionado, horizontal);
@@ -104,6 +114,8 @@ public class cTableroUI extends JFrame implements ActionListener {
         }
     }
 
+    /** Pinta el tablero de los barcos con distintos colores dependiendo
+     * de la matriz de los barcos */
     public void pintarBarco(){
 
         for (int i = 0; i < tc.ocupados.length; i ++){
@@ -119,17 +131,25 @@ public class cTableroUI extends JFrame implements ActionListener {
         }
     }
 
+    /** Pinta el panel de guia con la grandaria del barco */
     public void pintarPanelBarcos(String barcoSeleccionado){
 
-        int grandaria = tc.getGrandaria(barcoSeleccionado);
-        for (int i  = 0; i < btnPanelBarcos.length; i++){
-            btnPanelBarcos[i].setBackground(azul);
-        }
-        for (int i = 0; i < grandaria; i++){
-            btnPanelBarcos[i].setBackground(rojo);
+        if(barcoSeleccionado == null){
+            for (int i  = 0; i < btnPanelBarcos.length; i++){
+                btnPanelBarcos[i].setBackground(azul);
+            }
+        }else{
+            int grandaria = tc.getGrandaria(barcoSeleccionado);
+            for (int i  = 0; i < btnPanelBarcos.length; i++){
+                btnPanelBarcos[i].setBackground(azul);
+            }
+            for (int i = 0; i < grandaria; i++){
+                btnPanelBarcos[i].setBackground(rojo);
+            }
         }
     }
 
+    /** Devuelve el nombre del barco seleccionado en el menu */
     public String getBarcoSeleccionado(){
 
         if(menuBarcos.getSelectedItem() != null){
@@ -140,6 +160,7 @@ public class cTableroUI extends JFrame implements ActionListener {
         return null;
     }
 
+    /** Recoge el valor de la direccion dependiendo de los radiobutton */
     public boolean getDireccion(){
 
         if (rdbtnHorizontal.isSelected()){
@@ -148,6 +169,8 @@ public class cTableroUI extends JFrame implements ActionListener {
         return horizontal = false;
     }
 
+    /** Coloca los barocs y una vez colocados elimina toda
+     * la interfaz que no es necesaria */
     public void actionConfirmar(){
 
         if(confirmarPresionado){
@@ -156,11 +179,22 @@ public class cTableroUI extends JFrame implements ActionListener {
                 tc.insertarBarco(true);
                 pintarBarco();
             }
+            if(verificarBarcosInsertados()){
+                setTextoPantalla("Presione ¡Comenzar a Jugar!");
+                btnConfirmar.setVisible(false);
+                menuBarcos.setVisible(false);
+                panelRdbt.setVisible(false);
+                lblBarcos.setVisible(false);
+                infoBotones.setVisible(false);
+                infoConfirmar.setVisible(false);
+            }
         }else{
             setTextoPantalla("Posicion no Valida");
         }
     }
 
+    /** Llama a la clase disparos y comienza la segunda parte del juego
+     * si los barcos han sido todos colocados */
     public void actionComenzarJuego(){
 
         if(verificarBarcosInsertados()){
@@ -172,6 +206,7 @@ public class cTableroUI extends JFrame implements ActionListener {
         }
     }
 
+    /** Verifica si quedan barcos por seleccionar */
     public boolean verificarBarcosInsertados(){
 
         if(menuBarcos.getSelectedItem() == null && menuBarcos.getItemAt(2) == null){
@@ -181,11 +216,14 @@ public class cTableroUI extends JFrame implements ActionListener {
         }
     }
 
+    /** Muestra en la pantalla principal el texto que le pases */
     public void setTextoPantalla(String texto){
 
         pantalla.setText(texto);
     }
 
+    /** Metodo que elimina el barco del menu si el barco colocado en el tablero
+     * es el mismo que se quiere quitar */
     public boolean quitarBarcoMenu(){
 
         if(tc.b.nombre.equals(menuBarcos.getSelectedItem())){
@@ -197,6 +235,7 @@ public class cTableroUI extends JFrame implements ActionListener {
         }
     }
 
+    /** Inserta todos los botones a la matriz y les establece las propiedades necesarias */
     public void insertarBotones(){
 
         for (int i = 0; i < btnOcupados.length; i++){
@@ -227,14 +266,32 @@ public class cTableroUI extends JFrame implements ActionListener {
         }
     }
 
+    /** Metodo que cambia la direccion presionando la tecla R */
+    public void cambiarDireccion(){
+
+        rdbtnHorizontal.getInputMap(rdbtnHorizontal.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "rdbtnHorizontal");
+        rdbtnHorizontal.getInputMap(rdbtnHorizontal.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(MouseEvent.BUTTON3, 0), "rdbtnHorizontal");
+        rdbtnHorizontal.getActionMap().put("rdbtnHorizontal", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                if(rdbtnHorizontal.isSelected()){
+                    rdbtnVertical.setSelected(true);
+                }else{
+                    rdbtnHorizontal.setSelected(true);
+                }
+
+            }
+        });
+    }
+
     public cTableroUI() {
 
         super("Hundir la Flota - Ruben Romera");
 
-
         /** Inicializacion de variables */
 
-        //Colores
+        /** Colores */
         azul = new Color(72, 158, 234);
         negro = new Color(40, 44, 52);
         verde = new Color(85, 168, 118);
@@ -242,30 +299,32 @@ public class cTableroUI extends JFrame implements ActionListener {
         morado = new Color(176, 90, 155);
         amarillo = new Color(229, 192, 123);
 
-        //Fuentes
+        /** Fuentes */
         mono30 = new Font("Liberation Mono", Font.BOLD, 30);
         mono15 = new Font("Liberation Mono", Font.BOLD, 15);
         mono13 = new Font("Liberation Mono", Font.BOLD, 13);
 
-        //Borde
+        /** Bordes */
         bordeRedondeado = new LineBorder(verde, 2, true);
 
-        //Titulo del borde
+        /** Texto del borde */
         tituloBorde = new TitledBorder(bordeRedondeado, "Direccion", TitledBorder.CENTER, TitledBorder.TOP, mono15, verde);
 
-        //Combobox de Barcos
+        /** Texto del menu de los barcos */
         nombreBarcos = new String[]{tc.p.nombre, tc.bb.nombre, tc.s.nombre, tc.c.nombre, tc.l.nombre};
         barcosComboBox = new DefaultComboBoxModel(nombreBarcos);
 
-
+        /** Panel principal */
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1280, 720);
+        setResizable(false);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setBackground(negro);
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+        /** Panel que contiene los botones */
         panelBotones = new JPanel();
         panelBotones.setBackground(Color.lightGray);
         panelBotones.setBounds(372, 72, 550, 550);
@@ -276,35 +335,41 @@ public class cTableroUI extends JFrame implements ActionListener {
         /** Insertar los botones */
         insertarBotones();
 
+        /** Label que dice "Barcos" */
         lblBarcos = new JLabel("Barcos");
         lblBarcos.setHorizontalAlignment(SwingConstants.CENTER);
         lblBarcos.setForeground(verde);
         lblBarcos.setFont(mono30);
-        lblBarcos.setBounds(982, 72, 250, 34);
+        lblBarcos.setBounds(975, 72, 250, 34);
         contentPane.add(lblBarcos);
 
+        /** Menu de los barcos */
         menuBarcos = new JComboBox();
         menuBarcos.setModel(barcosComboBox);
         menuBarcos.setSelectedItem(null);
-        menuBarcos.setBounds(1022, 130, 182, 24);
+        menuBarcos.setBounds(1010, 130, 182, 24);
         menuBarcos.setBackground(verde);
         menuBarcos.setFocusable(false);
         menuBarcos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+
                 pintarPanelBarcos((String) menuBarcos.getSelectedItem());
             }
         });
         contentPane.add(menuBarcos);
 
+        /** Panel que contiene los botones de direccion */
         panelRdbt = new JPanel();
         panelRdbt.setBorder(tituloBorde);
-        panelRdbt.setBounds(1000, 285, 230, 111);
+        panelRdbt.setBounds(990, 285, 230, 111);
         panelRdbt.setBackground(negro);
         contentPane.add(panelRdbt);
         panelRdbt.setLayout(new GridLayout(0, 2, 0, 0));
 
+        /** Grupo de bos botones */
         buttonGroup = new ButtonGroup();
 
+        /** Boton vertical */
         rdbtnVertical = new JRadioButton("Vertical");
         rdbtnVertical.setFont(mono13);
         rdbtnVertical.setForeground(verde);
@@ -313,6 +378,7 @@ public class cTableroUI extends JFrame implements ActionListener {
         buttonGroup.add(rdbtnVertical);
         panelRdbt.add(rdbtnVertical);
 
+        /** Boton horizontal */
         rdbtnHorizontal = new JRadioButton("Horizontal");
         rdbtnHorizontal.setFont(mono13);
         rdbtnHorizontal.setForeground(verde);
@@ -321,6 +387,17 @@ public class cTableroUI extends JFrame implements ActionListener {
         buttonGroup.add(rdbtnHorizontal);
         panelRdbt.add(rdbtnHorizontal);
 
+        /** Llama al metodo para poder usar el teclado para cambiar la direccion */
+        cambiarDireccion();
+
+        /** Label de informacion para cambiar la direccion de los barcos */
+        infoBotones = new JLabel("Presione la tecla \"R\"");
+        infoBotones.setBounds(1020, 365, 300, 111);
+        infoBotones.setFont(mono13);
+        infoBotones.setForeground(verde);
+        contentPane.add(infoBotones);
+
+        /** Insertar los botones */
         panelBotonesBarcos = new JPanel();
         panelBotonesBarcos.setBackground(Color.lightGray);
         panelBotonesBarcos.setBounds(135, 92, 100, 500);
@@ -328,47 +405,98 @@ public class cTableroUI extends JFrame implements ActionListener {
         panelBotonesBarcos.setLayout(new GridLayout(0,1));
         contentPane.add(panelBotonesBarcos);
 
+        /** Insertar los botones del panel de los barcos
+         *  para saber la grandaria */
         insertarBotonesBarcos();
 
+        /** Panel donde se puede ver la grandaria de los barcos */
         panelBarcos = new JPanel();
         panelBarcos.setBackground(azul);
         panelBarcos.setBounds(74, 28, 216, 631);
         panelBarcos.setBorder(new LineBorder(Color.lightGray, 2));
         contentPane.add(panelBarcos);
 
+        /** Boton confirmar
+         * con deteccion de la tecla ENTER */
         btnConfirmar = new JButton("Confirmar");
         btnConfirmar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionConfirmar();
             }
         });
+        btnConfirmar.getInputMap(btnConfirmar.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Confirmar");
+        btnConfirmar.getActionMap().put("Confirmar", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                actionConfirmar();
+            }
+        });
         btnConfirmar.setBackground(verde);
         btnConfirmar.setFocusable(false);
         btnConfirmar.setForeground(negro);
-        btnConfirmar.setBounds(1041, 523, 173, 24);
+        btnConfirmar.setFont(mono15);
+        btnConfirmar.setBounds(1020, 523, 173, 24);
         contentPane.add(btnConfirmar);
 
+        /** Label de informacion para colocar los barcos con el teclado */
+        infoConfirmar = new JLabel("Presione \"Intro\"");
+        infoConfirmar.setBounds(1045, 550, 400, 50);
+        infoConfirmar.setFont(mono13);
+        infoConfirmar.setForeground(verde);
+        contentPane.add(infoConfirmar);
+
+        /** Pantalla que va mostrando las indicaciones
+         * e intrucciones del juego */
         pantalla = new JLabel("¡Bienvenido a Hundir la flota!");
-        pantalla.setFont(new Font("Liberation Mono", Font.BOLD, 30));
+        pantalla.setFont(mono30);
         pantalla.setForeground(verde);
         pantalla.setHorizontalAlignment(SwingConstants.CENTER);
         pantalla.setBounds(372, 12, 550, 48);
         contentPane.add(pantalla);
 
+        /** Boton que muestra la infromacion del juego */
+        btnInfo = new JButton("?");
+        btnInfo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                JOptionPane.showMessageDialog(null, "*** COLOCACION DE BARCOS *** \n/\\/\\/\\" +
+                        "/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\\n" +
+                        "1. Selecciona el Barco en el menu. \n" +
+                        "2. Escoge la direccion o presione la tecla \"R\".\n" +
+                        "3. Coloca el barco en la posicion deseada. \n" +
+                        "4. Presione el boton confirmar o la tecla \"Intro\".\n\n" +
+                        "Los barcos deben tener una separacion de una casilla.          " +
+                        "\n\n /---------------------------------------------------------------------------\\\n\n" +
+                        "*** DISPAROS *** \n/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\\n " +
+                        "Indique la posicion a disparar.");
+
+            }
+        });
+        btnInfo.setFocusable(false);
+        btnInfo.setBackground(verde);
+        btnInfo.setForeground(negro);
+        btnInfo.setBounds(1200, 25, 50, 50);
+        contentPane.add(btnInfo);
+
+        /** Boton que llama a los disparos
+         * cuando los barcos esten todos colocados */
         btnComenzarJuego = new JButton("¡Comenzar a Jugar!");
         btnComenzarJuego.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 actionComenzarJuego();
             }
         });
+        btnComenzarJuego.setFocusable(false);
         btnComenzarJuego.setBackground(verde);
         btnComenzarJuego.setForeground(negro);
+        btnComenzarJuego.setFont(mono15);
         btnComenzarJuego.setBounds(520, 644, 263, 25);
         contentPane.add(btnComenzarJuego);
 
+        /** Los valores de la array de caaracteres
+         * de la clase cTableroCalculos se llenan
+         * de espacios en blanco ' ' */
         tc.reinicializarTableros();
 
         this.setVisible(true);
-
     }
 }

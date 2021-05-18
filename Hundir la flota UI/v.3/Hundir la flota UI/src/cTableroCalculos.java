@@ -256,25 +256,41 @@ public class cTableroCalculos {
             if ((b.fila + b.GRANDARIA) > 8) {
                 return false;
             } else {
-                for (int i = 0; i < b.GRANDARIA; i++) {
-                    if (ocupados[b.fila+i][b.columna] != ' ' && ocupados[b.fila+i][b.columna] != 'o') {
-                        return false;
+                for (int i = 0; i < b.GRANDARIA+2; i++) {
+                    for (int j = b.columna-1; j < b.columna+2; j++){
+                        if (comprueba(b.fila + i - 1, j)) {
+                            return false;
+                        }
                     }
                 }
-                return true;
             }
+            return true;
         } else {
             if ((b.columna + b.GRANDARIA) > 8) {
                 return false;
             } else {
-                for (int i = 0; i < b.GRANDARIA; i++) {
-                    if (ocupados[b.fila][b.columna+i] != ' ' && ocupados[b.fila][b.columna+i] != 'o') {
-                        return false;
+                for (int i = 0; i < b.GRANDARIA+2; i++) {
+                    for (int j = b.fila-1; j < b.fila+2; j++){
+                        if (comprueba(j, b.columna + i - 1)) {
+                            return false;
+                        }
                     }
                 }
                 return true;
             }
         }
+    }
+
+    public boolean comprueba(int fila, int columna){
+
+        try{
+            if (ocupados[fila][columna] != ' ' && ocupados[fila][columna] != 'o'){
+                return true;
+            }
+        }catch (Exception e){
+            return false;
+        }
+        return false;
     }
 
     //Metodo que muestra reinicializa los tableros

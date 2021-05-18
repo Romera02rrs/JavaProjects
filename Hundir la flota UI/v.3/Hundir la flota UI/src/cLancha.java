@@ -8,10 +8,4 @@ public class cLancha extends cBarcos {
         navegando = true;
         nombre = "Lancha";
     }
-
-    public void colocar(int f, int c, boolean d) {
-        fila = f;
-        columna = c;
-        horizontal = d;
-    }
 }

@@ -1,0 +1,165 @@
+Index: src/cInterfaz.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/cInterfaz.java b/src/cInterfaz.java
+--- a/src/cInterfaz.java	(date 1623235222376)
++++ b/src/cInterfaz.java	(date 1623235222376)
+@@ -14,13 +14,19 @@
+ 
+ public class cInterfaz extends JFrame implements ActionListener {
+ 
+-    DefaultListModel<cAlumnos> dlm;
++    cAlumnos a = new cAlumnos();
++    cResultados r = new cResultados();
+ 
+-    DefaultTableModel dtm;
++    DefaultListModel<cAlumnos> dlmAlumnos;
++    DefaultTableModel dtmAlumnos;
++
++    DefaultListModel<cResultados> dlmResultados;
++    DefaultTableModel dtmResultados;
+ 
+     LineBorder borde;
+ 
+     public ArrayList<cAlumnos> listaAlumnos;
++    public ArrayList<cResultados> resultados;
+ 
+     private JPanel contentPane;
+     private JList lista;
+@@ -49,18 +55,34 @@
+ 
+     public void cargarAlumnos() throws SQLException {
+ 
+-        cAlumnos a = new cAlumnos();
+         listaAlumnos = a.cargarAlumnos();
+ 
+     }
+ 
++    public void cargarResultados(int NIA) throws SQLException {
++
++        resultados = r.calculaResultados(NIA);
++        insertarResultados();
++        insertarTablaResultados();
++    }
++
+     public void insertarAlumnos() {
+ 
+         Iterator<cAlumnos> iter;
+         iter = listaAlumnos.iterator();
+         while (iter.hasNext()) {
+             cAlumnos a = iter.next();
+-            dlm.addElement(a);
++            dlmAlumnos.addElement(a);
++        }
++    }
++
++    public void insertarResultados(){
++
++        Iterator<cResultados> iter;
++        iter = resultados.iterator();
++        while (iter.hasNext()) {
++            cResultados r = iter.next();
++            dlmResultados.addElement(r);
+         }
+     }
+ 
+@@ -69,15 +91,16 @@
+ 
+     }
+ 
+-    public void dimeAlumno(int index){
++    public void dimeAlumno(int index) {
+ 
+         System.out.println(listaAlumnos.get(index));
+-        insertarTabla(index);
++        insertarTablaAlumnos(index);
++
+     }
+ 
+-    public void insertarTabla(int index){
++    public void insertarTablaAlumnos(int index) throws SQLException {
+ 
+-        dtm.setRowCount(0);
++        dtmAlumnos.setRowCount(0);
+ 
+         cAlumnos a = listaAlumnos.get(index);
+ 
+@@ -86,14 +109,29 @@
+         fila[1] = a.apellido;
+         fila[2] = a.NIA;
+ 
+-        dtm.addRow(fila);
++        dtmAlumnos.addRow(fila);
++    }
++    public void insertarTablaResultados() throws SQLException {
++
++        dtmResultados.setRowCount(0);
++
++        cResultados r = resultados.get(1);
++
++        Object[] fila = new Object[3];
++        fila[0] = r.NIA;
++        fila[1] = r.apellido;
++        fila[2] = r.abreviatura;
++        fila[3] = r.nota;
++
++        dtmResultados.addRow(fila);
++        resultados.remove(1);
+     }
+ 
+     public void cargarTabla(){
+ 
+-        dtm.addColumn("Nombre");
+-        dtm.addColumn("Apellidos");
+-        dtm.addColumn("Telefono");
++        dtmAlumnos.addColumn("Nombre");
++        dtmAlumnos.addColumn("Apellidos");
++        dtmAlumnos.addColumn("Telefono");
+     }
+ 
+     /**
+@@ -103,9 +141,11 @@
+ 
+         super("Alumnos - Notas");
+ 
+-        dlm = new DefaultListModel();
+-        dtm = new DefaultTableModel();
++        dlmAlumnos = new DefaultListModel();
++        dtmAlumnos = new DefaultTableModel();
+ 
++        dlmResultados = new DefaultListModel();
++        dtmResultados = new DefaultTableModel();
+ 
+         cargarAlumnos();
+         insertarAlumnos();
+@@ -131,7 +171,7 @@
+         setContentPane(contentPane);
+ 
+         /** Lista */
+-        lista = new JList(dlm);
++        lista = new JList(dlmAlumnos);
+         lista.setBounds(100, 100, 300, 500);
+         lista.setBackground(Color.lightGray);
+         lista.setFont(texto);
+@@ -139,13 +179,17 @@
+         lista.addListSelectionListener(new ListSelectionListener(){
+             @Override
+             public void valueChanged(ListSelectionEvent e) {
+-                dimeAlumno(lista.getSelectedIndex());
++                try {
++                    insertarTablaAlumnos(lista.getSelectedIndex());
++                } catch (SQLException throwables) {
++                    throwables.printStackTrace();
++                }
+             }
+         });
+         contentPane.add(lista);
+ 
+         /** Tabla */
+-        tabla = new JTable(dtm);
++        tabla = new JTable(dtmResultados);
+         tabla.setBounds(450, 100, 700, 500);
+         tabla.setBackground(Color.lightGray);
+         tabla.setFont(texto);

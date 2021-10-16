@@ -1,8 +1,3 @@
-# Bienvenido al repositorio de Romera02rrs
-Las carpetas del repositorio *JavaProjects* son trabajos hechos en clase de programación del primer año del ciclo superior *Desarrollo de Aplicaciones Web* o también denominado *DAW*.
-
-A medida que se van añadiendo trabajos, la complejidad del código va aumentando y se van implementando nuevos conocimientos.
-
 ## Orden de las carpetas
 
 | Orden | Fecha | Nombre |
